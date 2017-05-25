@@ -3,15 +3,15 @@
 namespace AppBundle\Tests\Specification;
 
 use AppBundle\Entity\Ticker;
-use AppBundle\Specification\ShiftDownTrendSpecification;
+use AppBundle\Specification\ShouldSellSpecification;
 
 /**
- * Class ShiftDownTrendSpecificationTest
+ * Class ShouldSellSpecificationTest
  */
-class ShiftDownTrendSpecificationTest extends \PHPUnit_Framework_TestCase
+class ShouldSellSpecificationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ShiftDownTrendSpecification
+     * @var ShouldSellSpecification
      */
     private $specification;
 
@@ -20,7 +20,7 @@ class ShiftDownTrendSpecificationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->specification = new ShiftDownTrendSpecification();
+        $this->specification = new ShouldSellSpecification();
     }
 
     /**
@@ -42,17 +42,17 @@ class ShiftDownTrendSpecificationTest extends \PHPUnit_Framework_TestCase
     {
       return [
         [
-          (new Ticker())->setAsk(2.0),
-          (new Ticker())->setAsk(3.0),
-          (new Ticker())->setAsk(2.0),
-          (new Ticker())->setAsk(1.0),
+          (new Ticker())->setBid(2.0),
+          (new Ticker())->setBid(3.0),
+          (new Ticker())->setBid(1.5),
+          (new Ticker())->setBid(1.0),
           true,
         ],
         [
-          (new Ticker())->setAsk(4.0),
-          (new Ticker())->setAsk(3.0),
-          (new Ticker())->setAsk(2.0),
-          (new Ticker())->setAsk(1.0),
+          (new Ticker())->setBid(4.0),
+          (new Ticker())->setBid(3.0),
+          (new Ticker())->setBid(2.0),
+          (new Ticker())->setBid(1.0),
           false,
         ],
       ];

@@ -14,6 +14,7 @@ class TradeCommand extends ContainerAwareCommand
 {
     const   CAPITAL_ARG = 'capital';
     const   CURRENCY_ARG = 'pair';
+    const   PAIR_SEPARATOR = '/';
 
     private $capital;
     private $currency;
@@ -35,7 +36,7 @@ class TradeCommand extends ContainerAwareCommand
           ->setDescription('Trade currencies.')
           ->setHelp('This command allows you to test trading currencies...')
           ->addArgument(self::CAPITAL_ARG, InputArgument::REQUIRED, 'The capital amount to invest.')
-          ->addArgument(self::CURRENCY_ARG, InputArgument::OPTIONAL, 'The pair targeted to trade off. Base and quote separated by a comma. ex: ETH,EUR')
+          ->addArgument(self::CURRENCY_ARG, InputArgument::OPTIONAL, 'The pair targeted to trade off. Base and quote separated by a slash. ex: ETH/EUR')
       ;
     }
 
@@ -50,8 +51,8 @@ class TradeCommand extends ContainerAwareCommand
       $this->capital = $input->getArgument(self::CAPITAL_ARG);
       $this->currency = 0;
 
-      $this->buySpec = $this->getContainer()->get('app.specification.shift_up_trend');
-      $this->sellSpec = $this->getContainer()->get('app.specification.shift_down_trend');
+      $this->buySpec = $this->getContainer()->get('app.specification.should_buy');
+      $this->sellSpec = $this->getContainer()->get('app.specification.should_sell');
 
       $provider = $this->getContainer()->get('app.provider.random_ticker');
       $this->pair = (new Pair())
@@ -63,10 +64,10 @@ class TradeCommand extends ContainerAwareCommand
       if (null !== $input->getArgument(self::CURRENCY_ARG)) {
         $provider = $this->getContainer()->get('app.provider.currency_ticker');
         $this->pair = (new Pair())
-          ->setId(str_replace(',', '', $input->getArgument(self::CURRENCY_ARG)))
-          ->setAltName(str_replace(',', '', $input->getArgument(self::CURRENCY_ARG)))
-          ->setBase(explode(',', $input->getArgument(self::CURRENCY_ARG))[0])
-          ->setQuote(explode(',', $input->getArgument(self::CURRENCY_ARG))[1])
+          ->setId(str_replace(self::PAIR_SEPARATOR, '', $input->getArgument(self::CURRENCY_ARG)))
+          ->setAltName(str_replace(self::PAIR_SEPARATOR, '', $input->getArgument(self::CURRENCY_ARG)))
+          ->setBase(explode(self::PAIR_SEPARATOR, $input->getArgument(self::CURRENCY_ARG))[0])
+          ->setQuote(explode(self::PAIR_SEPARATOR, $input->getArgument(self::CURRENCY_ARG))[1])
         ;
       }
 
@@ -128,24 +129,49 @@ class TradeCommand extends ContainerAwareCommand
 
     private function shift(Ticker $ticker)
     {
-      if ((0 < $this->capital) && $this->buySpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)) {
+      if (
+        (0 < $this->capital)
+        &&
+        $this->buySpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+      ) {
         $this->buy($ticker);
       }
-      if ((0 < $this->currency) && $this->sellSpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)) {
+
+      if (
+        (0 < $this->currency)
+        &&
+        $this->sellSpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+      ) {
         $this->sell($ticker);
       }
     }
 
     private function buy(Ticker $ticker)
     {
-      printf("Bought %f %s for %f %s at %f\n", ($this->capital / $ticker->getAsk()), $this->pair->getBase(), round($this->capital, 2), $this->pair->getQuote(), $ticker->getAsk());
+      printf(
+        "Bought %f %s for %s %s at %f\n",
+        ($this->capital / $ticker->getAsk()),
+        $this->pair->getBase(),
+        number_format($this->capital, 2),
+        $this->pair->getQuote(),
+        $ticker->getAsk()
+      );
+
       $this->currency = $this->capital / $ticker->getAsk();
       $this->capital = 0;
     }
 
     private function sell(Ticker $ticker)
     {
-      printf("Sold %f %s for %f %s at %f\n", $this->currency, $this->pair->getBase(), round($this->currency * $ticker->getBid(), 2), $this->pair->getQuote(), $ticker->getBid());
+      printf(
+        "Sold %f %s for %s %s at %f\n",
+        $this->currency,
+        $this->pair->getBase(),
+        number_format($this->currency * $ticker->getBid(), 2),
+        $this->pair->getQuote(),
+        $ticker->getBid()
+      );
+
       $this->capital = $this->currency * $ticker->getBid();
       $this->currency = 0;
     }

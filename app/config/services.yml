@@ -27,7 +27,7 @@ services:
         class: AndreasGlaser\KPC\KPC
         arguments: [%kraken_api_key%, %kraken_api_secret%]
 
-    app.specification.shift_down_trend:
-        class: AppBundle\Specification\ShiftDownTrendSpecification
-    app.specification.shift_up_trend:
-        class: AppBundle\Specification\ShiftUpTrendSpecification
+    app.specification.should_buy:
+        class: AppBundle\Specification\ShouldBuySpecification
+    app.specification.should_sell:
+        class: AppBundle\Specification\ShouldSellSpecification

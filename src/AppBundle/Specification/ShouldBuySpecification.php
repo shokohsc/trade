@@ -6,9 +6,9 @@ use AppBundle\Entity\Ticker;
 use AppBundle\Specification\SpecificationInterface;
 
 /**
- * ShiftUpTrendSpecification
+ * ShouldBuySpecification
  */
-class ShiftUpTrendSpecification implements SpecificationInterface
+class ShouldBuySpecification implements SpecificationInterface
 {
   /**
    * {@inheritdoc}
@@ -27,7 +27,7 @@ class ShiftUpTrendSpecification implements SpecificationInterface
       &&
       $third->getAsk() <= $fourth->getAsk()
       &&
-      $fourth->getAsk() > $first->getAsk()
+      $third->getAsk() > $first->getAsk()
     ;
   }
 }

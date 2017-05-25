@@ -3,15 +3,15 @@
 namespace AppBundle\Tests\Specification;
 
 use AppBundle\Entity\Ticker;
-use AppBundle\Specification\ShiftUpTrendSpecification;
+use AppBundle\Specification\ShouldBuySpecification;
 
 /**
- * Class ShiftUpTrendSpecificationTest
+ * Class ShouldBuySpecificationTest
  */
-class ShiftUpTrendSpecificationTest extends \PHPUnit_Framework_TestCase
+class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var ShiftUpTrendSpecification
+     * @var ShouldBuySpecification
      */
     private $specification;
 
@@ -20,7 +20,7 @@ class ShiftUpTrendSpecificationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->specification = new ShiftUpTrendSpecification();
+        $this->specification = new ShouldBuySpecification();
     }
 
     /**
@@ -44,7 +44,7 @@ class ShiftUpTrendSpecificationTest extends \PHPUnit_Framework_TestCase
         [
           (new Ticker())->setAsk(2.0),
           (new Ticker())->setAsk(1.0),
-          (new Ticker())->setAsk(2.0),
+          (new Ticker())->setAsk(2.5),
           (new Ticker())->setAsk(3.0),
           true,
         ],

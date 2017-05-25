@@ -6,9 +6,9 @@ use AppBundle\Entity\Ticker;
 use AppBundle\Specification\SpecificationInterface;
 
 /**
- * ShiftDownTrendSpecification
+ * ShouldSellSpecification
  */
-class ShiftDownTrendSpecification implements SpecificationInterface
+class ShouldSellSpecification implements SpecificationInterface
 {
   /**
    * {@inheritdoc}
@@ -21,13 +21,13 @@ class ShiftDownTrendSpecification implements SpecificationInterface
     ) :bool
   {
     return
-      $first->getAsk() <= $second->getAsk()
+      $first->getBid() <= $second->getBid()
       &&
-      $second->getAsk() >= $third->getAsk()
+      $second->getBid() >= $third->getBid()
       &&
-      $third->getAsk() >= $fourth->getAsk()
+      $third->getBid() >= $fourth->getBid()
       &&
-      $fourth->getAsk() < $first->getAsk()
+      $third->getBid() < $first->getBid()
     ;
   }
 }
