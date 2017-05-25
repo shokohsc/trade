@@ -99,8 +99,10 @@ class TradeCommand extends ContainerAwareCommand
       }
 
       $output->writeln([
+        '',
         'End trading.',
         '============',
+        '',
         'Starting capital: '.$input->getArgument('capital').' '.$this->pair->getQuote(),
         'End capital: '.round($this->capital, 2).' '.$this->pair->getQuote(),
       ]);
@@ -136,14 +138,14 @@ class TradeCommand extends ContainerAwareCommand
 
     private function buy(Ticker $ticker)
     {
-      echo 'Bought '.($this->capital / $ticker->getAsk()).' '.$this->pair->getBase().' for '.round($this->capital, 2). ' '.$this->pair->getQuote().' at '.$ticker->getAsk()."\n";
+      printf("Bought %f %s for %f %s at %f\n", ($this->capital / $ticker->getAsk()), $this->pair->getBase(), round($this->capital, 2), $this->pair->getQuote(), $ticker->getAsk());
       $this->currency = $this->capital / $ticker->getAsk();
       $this->capital = 0;
     }
 
     private function sell(Ticker $ticker)
     {
-      echo 'Sold '.$this->currency.' '.$this->pair->getBase().' for '.round($this->currency * $ticker->getBid(), 2).' '.$this->pair->getQuote().' at '.$ticker->getBid()."\n";
+      printf("Sold %f %s for %f %s at %f\n", $this->currency, $this->pair->getBase(), round($this->currency * $ticker->getBid(), 2), $this->pair->getQuote(), $ticker->getBid());
       $this->capital = $this->currency * $ticker->getBid();
       $this->currency = 0;
     }

@@ -14,7 +14,7 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class CurrencyTickerProvider implements ProviderInterface
 {
-  const DAY_LONG = 1440;
+  const DAY_LONG = 1;
 
   /**
    * Ticker factory $tickerFactory
