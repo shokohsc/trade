@@ -1,0 +1,33 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+    #parameter_name: value
+
+services:
+    app.ohlc_ticker.transformer:
+        class: AppBundle\Service\OHLCToTickerTransformer
+
+    app.factory.asset:
+        class: AppBundle\Factory\AssetFactory
+    app.factory.pair:
+        class: AppBundle\Factory\PairFactory
+    app.factory.ticker:
+        class: AppBundle\Factory\TickerFactory
+
+    app.provider.random_ticker:
+        class: AppBundle\Provider\RandomTickerProvider
+        arguments: ['@app.factory.ticker', '@app.service.randomizer']
+    app.provider.currency_ticker:
+        class: AppBundle\Provider\CurrencyTickerProvider
+        arguments: ['@app.factory.ticker', '@app.ohlc_ticker.transformer', '@app.service.kraken']
+
+    app.service.randomizer:
+        class: AppBundle\Service\Randomizer
+    app.service.kraken:
+        class: AndreasGlaser\KPC\KPC
+        arguments: [%kraken_api_key%, %kraken_api_secret%]
+
+    app.specification.shift_down_trend:
+        class: AppBundle\Specification\ShiftDownTrendSpecification
+    app.specification.shift_up_trend:
+        class: AppBundle\Specification\ShiftUpTrendSpecification
