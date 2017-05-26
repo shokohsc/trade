@@ -16,7 +16,7 @@ class OHLCToTickerTransformer implements DataTransformerInterface
   {
     return [
       'a' => [
-        $ohlc[1]
+        $ohlc[4]
       ],
       'b' => [
         $ohlc[4]

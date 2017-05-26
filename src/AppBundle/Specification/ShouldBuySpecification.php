@@ -21,13 +21,13 @@ class ShouldBuySpecification implements SpecificationInterface
     ) :bool
   {
     return
-      $first->getAsk() >= $second->getAsk()
+      $first->getAsk() > $second->getAsk()
       &&
-      $second->getAsk() <= $third->getAsk()
+      $second->getAsk() < $third->getAsk()
       &&
-      $third->getAsk() <= $fourth->getAsk()
-      // &&
-      // $third->getAsk() > $first->getAsk()
+      $third->getAsk() < $fourth->getAsk()
+      &&
+      $third->getAsk() > $first->getAsk()
     ;
   }
 }

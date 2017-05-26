@@ -21,13 +21,13 @@ class ShouldSellSpecification implements SpecificationInterface
     ) :bool
   {
     return
-      $first->getBid() <= $second->getBid()
+      $first->getBid() < $second->getBid()
       &&
-      $second->getBid() >= $third->getBid()
+      $second->getBid() > $third->getBid()
       &&
-      $third->getBid() >= $fourth->getBid()
-      // &&
-      // $third->getBid() < $first->getBid()
+      $third->getBid() > $fourth->getBid()
+      &&
+      $third->getBid() < $first->getBid()
     ;
   }
 }
