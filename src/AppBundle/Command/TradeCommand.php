@@ -104,9 +104,31 @@ class TradeCommand extends ContainerAwareCommand
         'End trading.',
         '============',
         '',
-        'Starting capital: '.$input->getArgument('capital').' '.$this->pair->getQuote(),
-        'End capital: '.round($this->capital, 2).' '.$this->pair->getQuote(),
+        sprintf(
+          'Starting capital: %d %s',
+          $input->getArgument('capital'),
+          $this->pair->getQuote()
+        ),
+        sprintf(
+          'End capital: %01.2f %s',
+          $this->getEndCapital(),
+          $this->pair->getQuote()
+        ),
+        sprintf(
+          'Gain: %01.2f',
+          $this->getPercentage($input->getArgument('capital'))
+        ).'%',
       ]);
+    }
+
+    private function getPercentage(int $base)
+    {
+      return round((($this->getEndCapital() - floatval($base)) / floatval($base)) * 100);
+    }
+
+    private function getEndCapital()
+    {
+      return round($this->capital, 2);
     }
 
     private function setTickers(Ticker $first, Ticker $second, Ticker $third, Ticker $fourth)
@@ -164,7 +186,7 @@ class TradeCommand extends ContainerAwareCommand
     private function sell(Ticker $ticker)
     {
       printf(
-        "Sold %f %s for %s %s at %f\n",
+        "Sold %f %s for %s %s at %f\n\n",
         $this->currency,
         $this->pair->getBase(),
         number_format($this->currency * $ticker->getBid(), 2),

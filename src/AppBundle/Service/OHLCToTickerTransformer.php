@@ -30,7 +30,7 @@ class OHLCToTickerTransformer implements DataTransformerInterface
   public function reverseTransform($ticker): array
   {
     return [
-      4 => $ticker->getBid(),
+      4 => $ticker->getAsk(),
       1 => $ticker->getAsk(),
     ];
   }
