@@ -25,7 +25,7 @@ services:
         class: AppBundle\Service\Randomizer
     app.service.kraken:
         class: AndreasGlaser\KPC\KPC
-        arguments: [%kraken_api_key%, %kraken_api_secret%]
+        arguments: ["%kraken_api_key%", "%kraken_api_secret%"]
 
     app.specification.should_buy:
         class: AppBundle\Specification\ShouldBuySpecification

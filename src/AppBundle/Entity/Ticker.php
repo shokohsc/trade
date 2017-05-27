@@ -2,11 +2,16 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
+use DateTimeZone;
+
 /**
  * Ticker
  */
 class Ticker
 {
+  const TIMEZONE_PARIS = 'Europe/Paris';
+
   /**
    * Id $id
    * @var string
@@ -24,6 +29,12 @@ class Ticker
    * @var float
    */
   private $bid;
+
+  /**
+   * Date $data
+   * @var DateTime
+   */
+  private $date;
 
   /**
    * Set id $id
@@ -86,5 +97,27 @@ class Ticker
   public function getBid() :float
   {
     return $this->bid;
+  }
+
+  /**
+   * Set date $date
+   * @param  DateTime $date
+   * @return Ticker
+   */
+  public function setDate(DateTime $date) :Ticker
+  {
+    $this->date = $date;
+
+    return $this;
+  }
+
+  /**
+   * Get date $date
+   * @return DateTime
+   */
+  public function getDate() :DateTime
+  {
+    $this->date->setTimezone(new DateTimeZone(self::TIMEZONE_PARIS));
+    return $this->date;
   }
 }

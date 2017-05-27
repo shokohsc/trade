@@ -4,17 +4,19 @@ namespace AppBundle\Command;
 
 class Currencies
 {
-  const EURO = 'EUR';
-  const US_DOLLAR = 'USD';
+  const EURO            = 'EUR';
 
-  const RANDOM = 'RAND';
-  const ETHER = 'ETH';
-  const BITCOIN = 'BTC';
-  const LUMEN = 'XLM';
-  const RIPPLE = 'XRP';
-  const ETHER_CLASSIC = 'ETC';
-  const MONERO = 'XML';
-  const DASH = 'DASH';
-  const ZCASH = 'ZEC';
-  const LITECOIN = 'LTC';
+  const RANDOM          = 'RAND';
+
+  const AUGUR           = 'REP';
+  const BITCOIN         = 'BTC';
+  const DASH            = 'DASH';
+  const ETHER           = 'ETH';
+  const ETHER_CLASSIC   = 'ETC';
+  const GNOSIS          = 'GNO';
+  const LITECOIN        = 'LTC';
+  const LUMEN           = 'XLM';
+  const MONERO          = 'XML';
+  const RIPPLE          = 'XRP';
+  const ZCASH           = 'ZEC';
 }

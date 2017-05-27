@@ -26,8 +26,6 @@ class ShouldSellSpecification implements SpecificationInterface
       $second->getBid() > $third->getBid()
       &&
       $third->getBid() > $fourth->getBid()
-      &&
-      $third->getBid() < $first->getBid()
     ;
   }
 }

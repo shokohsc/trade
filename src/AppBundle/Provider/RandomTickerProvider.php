@@ -7,6 +7,7 @@ use AppBundle\Entity\Ticker;
 use AppBundle\Provider\ProviderInterface;
 use AppBundle\Factory\FactoryInterface;
 use AppBundle\Service\RandomizerInterface;
+use DateTime;
 
 /**
  * RandomTickerProvider
@@ -89,6 +90,9 @@ class RandomTickerProvider implements ProviderInterface
         'b' => [
           0 => $bid / 10000,
         ],
+        'd' => [
+          0 => new DateTime(),
+        ]
       ],
     ];
   }

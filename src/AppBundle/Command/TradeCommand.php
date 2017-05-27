@@ -33,7 +33,7 @@ class TradeCommand extends ContainerAwareCommand
     {
       $this
           ->setName('app:trade')
-          ->setDescription('Trade currencies.')
+          ->setDescription('Trade currencies example.')
           ->setHelp('This command allows you to test trading currencies...')
           ->addArgument(self::CAPITAL_ARG, InputArgument::REQUIRED, 'The capital amount to invest.')
           ->addArgument(self::CURRENCY_ARG, InputArgument::OPTIONAL, 'The pair targeted to trade off. Base and quote separated by a slash. ex: ETH/EUR')
@@ -74,16 +74,6 @@ class TradeCommand extends ContainerAwareCommand
       $tickers = $provider->get($this->pair);
 
       foreach ($tickers as $key => $ticker) {
-          if (3 === $key) {
-            $this->setTickers(
-              $tickers[$key - 3],
-              $tickers[$key - 2],
-              $tickers[$key - 1],
-              $tickers[$key]
-            );
-            $this->start($ticker);
-          }
-
           if (3 < $key) {
             $this->setTickers(
               $tickers[$key - 3],
@@ -92,10 +82,6 @@ class TradeCommand extends ContainerAwareCommand
               $tickers[$key]
             );
             $this->shift($ticker);
-          }
-
-          if (count($tickers) - 1 === $key && 0 < $this->currency) {
-            $this->end($ticker);
           }
       }
 
@@ -115,6 +101,11 @@ class TradeCommand extends ContainerAwareCommand
           $this->pair->getQuote()
         ),
         sprintf(
+          'End currency: %f %s',
+          $this->currency,
+          $this->pair->getBase()
+        ),
+        sprintf(
           'Gain: %01.2f',
           $this->getPercentage($input->getArgument('capital'))
         ).'%',
@@ -123,7 +114,7 @@ class TradeCommand extends ContainerAwareCommand
 
     private function getPercentage(int $base)
     {
-      return round((($this->getEndCapital() - floatval($base)) / floatval($base)) * 100);
+      return round((($this->getEndCapital() - floatval($base)) / floatval($base)) * 100, 2);
     }
 
     private function getEndCapital()
@@ -137,16 +128,6 @@ class TradeCommand extends ContainerAwareCommand
         $this->second = $second;
         $this->third = $third;
         $this->fourth = $fourth;
-    }
-
-    private function start(Ticker $ticker)
-    {
-      $this->capital = (0 < $this->capital) ? $this->buy($ticker) : $this->capital;
-    }
-
-    private function end(Ticker $ticker)
-    {
-      $this->currency = (0 < $this->currency) ? $this->sell($ticker) : $this->currency;
     }
 
     private function shift(Ticker $ticker)
@@ -171,7 +152,8 @@ class TradeCommand extends ContainerAwareCommand
     private function buy(Ticker $ticker)
     {
       printf(
-        "Bought %f %s for %s %s at %f\n",
+        "%s Bought %f %s for %s %s at %f\n",
+        $ticker->getDate()->format('d/m/Y H:i:s'),
         ($this->capital / $ticker->getAsk()),
         $this->pair->getBase(),
         number_format($this->capital, 2),
@@ -186,7 +168,8 @@ class TradeCommand extends ContainerAwareCommand
     private function sell(Ticker $ticker)
     {
       printf(
-        "Sold %f %s for %s %s at %f\n\n",
+        "%s Sold %f %s for %s %s at %f\n\n",
+        $ticker->getDate()->format('d/m/Y H:i:s'),
         $this->currency,
         $this->pair->getBase(),
         number_format($this->currency * $ticker->getBid(), 2),

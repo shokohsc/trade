@@ -38,3 +38,11 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+
+monolog:
+    handlers:
+        trade:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%_trade.log'
+            level: info
+            channels: ['!event']
