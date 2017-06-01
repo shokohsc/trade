@@ -20,14 +20,15 @@ class TradeCommand extends ContainerAwareCommand
     private $currency;
 
     private $pair;
+    private $lastTicker;
 
     private $first;
     private $second;
     private $third;
     private $fourth;
 
-    private $buySpec;
-    private $sellSpec;
+    private $shouldBuy;
+    private $shouldSell;
 
     protected function configure()
     {
@@ -51,8 +52,8 @@ class TradeCommand extends ContainerAwareCommand
       $this->capital = $input->getArgument(self::CAPITAL_ARG);
       $this->currency = 0;
 
-      $this->buySpec = $this->getContainer()->get('app.specification.should_buy');
-      $this->sellSpec = $this->getContainer()->get('app.specification.should_sell');
+      $this->shouldBuy = $this->getContainer()->get('app.specification.should_buy');
+      $this->shouldSell = $this->getContainer()->get('app.specification.should_sell');
 
       $provider = $this->getContainer()->get('app.provider.random_ticker');
       $this->pair = (new Pair())
@@ -135,7 +136,9 @@ class TradeCommand extends ContainerAwareCommand
       if (
         (0 < $this->capital)
         &&
-        $this->buySpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+        ($this->shouldBuy->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+        ||
+        null !== $this->lastTicker && $ticker->getAsk() < $this->lastTicker->getBid())
       ) {
         $this->buy($ticker);
       }
@@ -143,10 +146,13 @@ class TradeCommand extends ContainerAwareCommand
       if (
         (0 < $this->currency)
         &&
-        $this->sellSpec->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+        ($this->shouldSell->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
+        ||
+        null !== $this->lastTicker && $ticker->getBid() > $this->lastTicker->getAsk())
       ) {
         $this->sell($ticker);
       }
+      $this->lastTicker = $ticker;
     }
 
     private function buy(Ticker $ticker)

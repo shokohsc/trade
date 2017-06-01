@@ -16,6 +16,12 @@ class TickerFactoryTest extends \PHPUnit_Framework_TestCase
     private $factory;
 
     /**
+     * Timestamp
+     * @var int
+     */
+    private $timestamp;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp()
@@ -33,10 +39,12 @@ class TickerFactoryTest extends \PHPUnit_Framework_TestCase
       $this->assertEquals(key($ticker), $result->getId());
       $this->assertEquals($ticker[key($ticker)]['a'][0], $result->getAsk());
       $this->assertEquals($ticker[key($ticker)]['b'][0], $result->getBid());
+      $this->assertEquals($ticker[key($ticker)]['d'][0], $result->getDate());
     }
 
     public function tickersProvider()
     {
+      $this->timestamp = 1496081021;
       return [
         [
           [
@@ -47,12 +55,16 @@ class TickerFactoryTest extends \PHPUnit_Framework_TestCase
               'b' => [
                 0 => 32.5394,
               ],
+              'd' => [
+                0 => $this->timestamp
+              ],
             ],
           ],
           (new Ticker())
             ->setId('some_pair')
             ->setAsk(42.5394)
             ->setBid(32.5394)
+            ->setDate((new \DateTime())->setTimestamp($this->timestamp))
         ],
         [
           [
@@ -63,12 +75,16 @@ class TickerFactoryTest extends \PHPUnit_Framework_TestCase
               'b' => [
                 0 => 139.56724,
               ],
+              'd' => [
+                0 => $this->timestamp
+              ],
             ],
           ],
           (new Ticker())
             ->setId('XETHZEUR')
             ->setAsk(139.96724)
             ->setBid(139.56724)
+            ->setDate((new \DateTime())->setTimestamp($this->timestamp))
         ],
       ];
     }

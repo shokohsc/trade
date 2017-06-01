@@ -23,7 +23,7 @@ class OHLCToTickerTransformer implements DataTransformerInterface
         $ohlc[4],
       ],
       'd' => [
-        DateTime::createFromFormat('U', $ohlc[0]),
+        (DateTime::createFromFormat('U', $ohlc[0]))->getTimestamp(),
       ]
     ];
   }

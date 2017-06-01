@@ -91,7 +91,7 @@ class RandomTickerProvider implements ProviderInterface
           0 => $bid / 10000,
         ],
         'd' => [
-          0 => new DateTime(),
+          0 => (new DateTime())->getTimestamp(),
         ]
       ],
     ];

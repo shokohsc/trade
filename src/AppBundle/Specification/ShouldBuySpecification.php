@@ -26,6 +26,8 @@ class ShouldBuySpecification implements SpecificationInterface
       $second->getAsk() < $third->getAsk()
       &&
       $third->getAsk() < $fourth->getAsk()
+      &&
+      $third->getAsk() > $first->getAsk()
     ;
   }
 }

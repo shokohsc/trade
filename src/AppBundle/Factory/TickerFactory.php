@@ -19,7 +19,7 @@ class TickerFactory implements FactoryInterface
       ->setId(key($data))
       ->setAsk($data[key($data)]['a'][0])
       ->setBid($data[key($data)]['b'][0])
-      ->setDate($data[key($data)]['d'][0])
+      ->setDate((new \DateTime)->setTimestamp($data[key($data)]['d'][0]))
     ;
   }
 }
