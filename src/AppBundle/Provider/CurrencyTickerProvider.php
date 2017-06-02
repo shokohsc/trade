@@ -14,7 +14,11 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class CurrencyTickerProvider implements ProviderInterface
 {
-  const DAY_LONG = 1;
+  /**
+   * OHLC interval in minutes
+   * @var integer
+   */
+  const OHLC_INTERVAL = 1;
 
   /**
    * Ticker factory $tickerFactory
@@ -47,7 +51,7 @@ class CurrencyTickerProvider implements ProviderInterface
   public function get(Pair $pair): array
   {
     $tickers = [];
-    $result = $this->kraken->getOHLC($pair->getId(), self::DAY_LONG);
+    $result = $this->kraken->getOHLC($pair->getId(), self::OHLC_INTERVAL);
     $json = json_decode($result->contents, true);
     $data = $json['result'][array_keys($json['result'])[0]];
 
