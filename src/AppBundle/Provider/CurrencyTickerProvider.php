@@ -16,9 +16,10 @@ class CurrencyTickerProvider implements ProviderInterface
 {
   /**
    * OHLC interval in minutes
+   * Valid intervals: 1,5,15,30,60,240,1440,10080,21600
    * @var integer
    */
-  const OHLC_INTERVAL = 1;
+  const OHLC_INTERVAL = 60;
 
   /**
    * Ticker factory $tickerFactory

@@ -21,6 +21,8 @@ services:
         class: AppBundle\Provider\CurrencyTickerProvider
         arguments: ['@app.factory.ticker', '@app.ohlc_ticker.transformer', '@app.service.kraken']
 
+    app.service.percentage:
+        class: AppBundle\Service\PercentageService
     app.service.randomizer:
         class: AppBundle\Service\Randomizer
     app.service.kraken:
@@ -29,5 +31,8 @@ services:
 
     app.specification.should_buy:
         class: AppBundle\Specification\ShouldBuySpecification
+        arguments: ['@app.service.percentage']
+
     app.specification.should_sell:
         class: AppBundle\Specification\ShouldSellSpecification
+        arguments: ['@app.service.percentage']

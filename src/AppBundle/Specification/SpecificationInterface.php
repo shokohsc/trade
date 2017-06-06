@@ -15,12 +15,14 @@ interface SpecificationInterface
      * @param  Ticker   $second
      * @param  Ticker   $third
      * @param  Ticker   $fourth
+     * @param  Ticker   $lastTicker
      * @return boolean
      */
     public function isSatisfiedBy(
       Ticker $first,
       Ticker $second,
       Ticker $third,
-      Ticker $fourth
+      Ticker $fourth,
+      $lastTicker
       ): bool;
 }

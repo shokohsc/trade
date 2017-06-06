@@ -30,6 +30,8 @@ class TradeCommand extends ContainerAwareCommand
     private $shouldBuy;
     private $shouldSell;
 
+    private $percentageService;
+
     protected function configure()
     {
       $this
@@ -54,6 +56,8 @@ class TradeCommand extends ContainerAwareCommand
 
       $this->shouldBuy = $this->getContainer()->get('app.specification.should_buy');
       $this->shouldSell = $this->getContainer()->get('app.specification.should_sell');
+
+      $this->percentageService = $this->getContainer()->get('app.service.percentage');
 
       $provider = $this->getContainer()->get('app.provider.random_ticker');
       $this->pair = (new Pair())
@@ -107,15 +111,14 @@ class TradeCommand extends ContainerAwareCommand
           $this->pair->getBase()
         ),
         sprintf(
+          'Asking now at : %f',
+          $ticker->getAsk()
+        ),
+        sprintf(
           'Gain: %01.2f',
-          $this->getPercentage($input->getArgument('capital'))
+          $this->percentageService->getGainPercentage($this->getEndCapital(), $input->getArgument('capital'))
         ).'%',
       ]);
-    }
-
-    private function getPercentage(int $base)
-    {
-      return round((($this->getEndCapital() - floatval($base)) / floatval($base)) * 100, 2);
     }
 
     private function getEndCapital()
@@ -136,54 +139,55 @@ class TradeCommand extends ContainerAwareCommand
       if (
         (0 < $this->capital)
         &&
-        ($this->shouldBuy->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
-        ||
-        null !== $this->lastTicker && $ticker->getAsk() < $this->lastTicker->getBid())
+        $this->shouldBuy->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth, $this->lastTicker)
       ) {
         $this->buy($ticker);
+        $this->lastTicker = $ticker;
       }
 
       if (
         (0 < $this->currency)
         &&
-        ($this->shouldSell->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth)
-        ||
-        null !== $this->lastTicker && $ticker->getBid() > $this->lastTicker->getAsk())
+        $this->shouldSell->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth, $this->lastTicker)
       ) {
         $this->sell($ticker);
+        $this->lastTicker = $ticker;
       }
-      $this->lastTicker = $ticker;
     }
 
     private function buy(Ticker $ticker)
     {
+      $newCurrency = $this->capital / $ticker->getAsk();
+      $newCurrency = $newCurrency - $this->percentageService->getPercentageOutOfNumber($newCurrency, 0.26);
       printf(
         "%s Bought %f %s for %s %s at %f\n",
         $ticker->getDate()->format('d/m/Y H:i:s'),
-        ($this->capital / $ticker->getAsk()),
+        $newCurrency,
         $this->pair->getBase(),
         number_format($this->capital, 2),
         $this->pair->getQuote(),
         $ticker->getAsk()
       );
 
-      $this->currency = $this->capital / $ticker->getAsk();
+      $this->currency = $newCurrency;
       $this->capital = 0;
     }
 
     private function sell(Ticker $ticker)
     {
+      $newCapital = $this->currency * $ticker->getBid();
+      $newCapital = $newCapital - $this->percentageService->getPercentageOutOfNumber($newCapital, 0.16);
       printf(
         "%s Sold %f %s for %s %s at %f\n\n",
         $ticker->getDate()->format('d/m/Y H:i:s'),
         $this->currency,
         $this->pair->getBase(),
-        number_format($this->currency * $ticker->getBid(), 2),
+        number_format($newCapital, 2),
         $this->pair->getQuote(),
         $ticker->getBid()
       );
 
-      $this->capital = $this->currency * $ticker->getBid();
+      $this->capital = $newCapital;
       $this->currency = 0;
     }
 }
