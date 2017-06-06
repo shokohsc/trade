@@ -9,14 +9,14 @@ class Currencies
   const RANDOM          = 'RAND';
 
   const AUGUR           = 'REP';
-  const BITCOIN         = 'BTC';
+  const BITCOIN         = 'XBT';
   const DASH            = 'DASH';
   const ETHER           = 'ETH';
   const ETHER_CLASSIC   = 'ETC';
   const GNOSIS          = 'GNO';
   const LITECOIN        = 'LTC';
   const LUMEN           = 'XLM';
-  const MONERO          = 'XML';
+  const MONERO          = 'XMR';
   const RIPPLE          = 'XRP';
   const ZCASH           = 'ZEC';
 }

@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use AppBundle\Entity\Pair;
 use AppBundle\Entity\Ticker;
 use AppBundle\Command\Currencies;
+use AppBundle\Specification\ShouldBuySpecification;
+use AppBundle\Specification\ShouldSellSpecification;
 
 class TradeCommand extends ContainerAwareCommand
 {
@@ -142,7 +144,6 @@ class TradeCommand extends ContainerAwareCommand
         $this->shouldBuy->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth, $this->lastTicker)
       ) {
         $this->buy($ticker);
-        $this->lastTicker = $ticker;
       }
 
       if (
@@ -151,14 +152,13 @@ class TradeCommand extends ContainerAwareCommand
         $this->shouldSell->isSatisfiedBy($this->first, $this->second, $this->third, $this->fourth, $this->lastTicker)
       ) {
         $this->sell($ticker);
-        $this->lastTicker = $ticker;
       }
     }
 
     private function buy(Ticker $ticker)
     {
       $newCurrency = $this->capital / $ticker->getAsk();
-      $newCurrency = $newCurrency - $this->percentageService->getPercentageOutOfNumber($newCurrency, 0.26);
+      $newCurrency = $newCurrency - $this->percentageService->getPercentageFrom(ShouldBuySpecification::TRADER_FEE, $newCurrency);
       printf(
         "%s Bought %f %s for %s %s at %f\n",
         $ticker->getDate()->format('d/m/Y H:i:s'),
@@ -171,12 +171,13 @@ class TradeCommand extends ContainerAwareCommand
 
       $this->currency = $newCurrency;
       $this->capital = 0;
+      $this->lastTicker = $ticker;
     }
 
     private function sell(Ticker $ticker)
     {
       $newCapital = $this->currency * $ticker->getBid();
-      $newCapital = $newCapital - $this->percentageService->getPercentageOutOfNumber($newCapital, 0.16);
+      $newCapital = $newCapital - $this->percentageService->getPercentageFrom(ShouldSellSpecification::TRADER_FEE, $newCapital);
       printf(
         "%s Sold %f %s for %s %s at %f\n\n",
         $ticker->getDate()->format('d/m/Y H:i:s'),
@@ -189,5 +190,6 @@ class TradeCommand extends ContainerAwareCommand
 
       $this->capital = $newCapital;
       $this->currency = 0;
+      $this->lastTicker = $ticker;
     }
 }

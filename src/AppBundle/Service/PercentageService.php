@@ -4,12 +4,12 @@ namespace AppBundle\Service;
 
 class PercentageService
 {
-    public function getGainPercentage(float $quote, int $base)
+    public function getGainPercentage(float $start, float $end)
     {
-      return round((($quote - floatval($base)) / floatval($base)) * 100, 2);
+      return round((($start - $end) / $end) * 100, 2);
     }
 
-    public function getPercentageOutOfNumber(float $number, float $percent)
+    public function getPercentageFrom(float $percent, float $number)
     {
       return round((($number * $percent) / 100), 2);
     }

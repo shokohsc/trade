@@ -11,7 +11,7 @@ use AppBundle\Service\PercentageService;
  */
 class ShouldSellSpecification implements SpecificationInterface
 {
-  const TAKER_FEE = 0.16;
+  const TRADER_FEE = 0.16;
 
   /**
    * Percentage service $percentageService
@@ -48,7 +48,7 @@ class ShouldSellSpecification implements SpecificationInterface
       &&
       $third->getBid() < $first->getBid())
       &&
-      self::TAKER_FEE < $this->percentageService->getGainPercentage($first->getBid(), $second->getBid())
+      self::TRADER_FEE < $this->percentageService->getGainPercentage($first->getBid(), $second->getBid())
       &&
       (null !== $lastTicker ? $lastTicker->getAsk() < $first->getBid() : true)
     ;
