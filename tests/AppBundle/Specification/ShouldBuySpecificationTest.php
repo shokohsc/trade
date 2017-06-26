@@ -4,12 +4,19 @@ namespace AppBundle\Tests\Specification;
 
 use AppBundle\Entity\Ticker;
 use AppBundle\Specification\ShouldBuySpecification;
+use AppBundle\Service\PercentageService;
+use Prophecy\Argument;
 
 /**
  * Class ShouldBuySpecificationTest
  */
 class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var PercentageService
+     */
+    private $service;
+
     /**
      * @var ShouldBuySpecification
      */
@@ -20,7 +27,8 @@ class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->specification = new ShouldBuySpecification();
+        $this->service = $this->prophesize(PercentageService::class);
+        $this->specification = new ShouldBuySpecification($this->service->reveal());
     }
 
     /**
@@ -31,10 +39,12 @@ class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
       Ticker $second,
       Ticker $third,
       Ticker $fourth,
+      Ticker $lastTicker,
       bool $isSatisfied
       )
     {
-      $result = $this->specification->isSatisfiedBy($first, $second, $third, $fourth);
+      $this->service->getGainPercentage(Argument::Any(), Argument::Any())->willReturn(0);
+      $result = $this->specification->isSatisfiedBy($first, $second, $third, $fourth, $lastTicker);
       $this->assertEquals($isSatisfied, $result);
     }
 
@@ -46,6 +56,7 @@ class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
           (new Ticker())->setAsk(1.0),
           (new Ticker())->setAsk(2.5),
           (new Ticker())->setAsk(3.0),
+          (new Ticker())->setBid(1.0),
           true,
         ],
         [
@@ -53,6 +64,7 @@ class ShouldBuySpecificationTest extends \PHPUnit_Framework_TestCase
           (new Ticker())->setAsk(2.0),
           (new Ticker())->setAsk(3.0),
           (new Ticker())->setAsk(4.0),
+          (new Ticker())->setBid(1.0),
           false,
         ],
       ];

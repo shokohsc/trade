@@ -6,7 +6,7 @@ class PercentageService
 {
     public function getGainPercentage(float $start, float $end)
     {
-      return round((($start - $end) / $end) * 100, 2);
+      return 0 !== $end ? round((($end - $start) / $end) * 100, 2) : -100;
     }
 
     public function getPercentageFrom(float $percent, float $number)

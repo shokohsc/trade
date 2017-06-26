@@ -118,7 +118,7 @@ class TradeCommand extends ContainerAwareCommand
         ),
         sprintf(
           'Gain: %01.2f',
-          $this->percentageService->getGainPercentage($this->getEndCapital(), $input->getArgument('capital'))
+          $this->percentageService->getGainPercentage($input->getArgument('capital'), $this->getEndCapital())
         ).'%',
       ]);
     }

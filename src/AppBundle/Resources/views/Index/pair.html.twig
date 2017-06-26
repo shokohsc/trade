@@ -1,0 +1,19 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<a href="{{ path('home') }}">Home</a>
+<div id="stock"></div>
+{{ lava.render('LineChart', 'Stocks', 'stock')|raw }}
+<div class="">
+  <p>
+    <span>Start capital: </span>100
+    <br>
+    <span>Start currency: </span>0
+  </p>
+  <p>
+    <span>End capital: </span>{{ capital }}
+    <br>
+    <span>End currency: </span>{{ currency|number_format(5, '.', ',') }}
+  </p>
+</div>
+{% endblock %}
