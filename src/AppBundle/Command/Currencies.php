@@ -10,6 +10,7 @@ class Currencies
 
   const AUGUR           = 'REP';
   const BITCOIN         = 'XBT';
+  const BITCOINCASH     = 'BCH';
   const DASH            = 'DASH';
   const ETHER           = 'ETH';
   const ETHER_CLASSIC   = 'ETC';

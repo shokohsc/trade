@@ -42,11 +42,9 @@ class ShouldSellSpecification implements SpecificationInterface
     return
       ($first->getBid() < $second->getBid()
       &&
-      $second->getBid() > $third->getBid()
+      $second->getBid() < $third->getBid()
       &&
-      $third->getBid() > $fourth->getBid()
-      &&
-      $third->getBid() < $first->getBid())
+      $third->getBid() > $fourth->getBid())
       &&
       (null !== $lastTicker ? self::TRADER_FEE < $this->percentageService->getGainPercentage($lastTicker->getBid(), $fourth->getBid()) : true)
       &&

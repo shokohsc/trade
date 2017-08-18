@@ -42,15 +42,11 @@ class ShouldBuySpecification implements SpecificationInterface
     return
       ($first->getAsk() > $second->getAsk()
       &&
-      $second->getAsk() < $third->getAsk()
+      $second->getAsk() > $third->getAsk()
       &&
-      $third->getAsk() < $fourth->getAsk()
-      &&
-      $third->getAsk() > $first->getAsk())
+      $third->getAsk() < $fourth->getAsk())
       &&
       (null !== $lastTicker ? self::TRADER_FEE < $this->percentageService->getGainPercentage($lastTicker->getAsk(), $fourth->getAsk()) : true)
-      &&
-      (null !== $lastTicker ? $lastTicker->getBid() > $fourth->getAsk() : true)
     ;
   }
 }
